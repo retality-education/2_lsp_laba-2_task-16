@@ -86,6 +86,7 @@ void end(bool& exit)
 
 void input_object(BitString& obj) {
 	bool is_input{};
+
 	if (!is_input)
 	{
 		int way{};
@@ -115,6 +116,72 @@ void input_object(BitString& obj) {
 		}
 	}
 }
+std::string task(BitString& A, BitString& B, int choice) {
+	int n;
+	std::string message;
+
+	switch (choice)
+	{
+	case 1:
+		message = A.to_string();
+		break;
+	case 2:
+		message = B.to_string();
+		break;
+	case 3:
+		input_object(A);
+		break;
+	case 4:
+		input_object(B);
+		break;
+	case 5:
+		message = "A > B =" + (A > B);
+		break;
+	case 6:
+		message = "A & B =" + (A & B).to_string() + '\n';
+		break;
+	case 7:
+		message = "A | B =" + (A | B).to_string() + '\n';
+		break;
+	case 8:
+		message = "A ^ B =" + (A & B).to_string() + '\n';
+		break;
+	case 9:
+		message = "not A = " + (~A).to_string() + '\n';
+		break;
+	case 10:
+		message = "not B = " + (~B).to_string() + '\n';
+		break;
+	case 11:
+		std::cout << " На сколько бит будем двигать строку A?\n";
+		std::cin >> n;
+		if (n < 0)
+			throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
+		message = "Результаты побитового сдвига: A << " + std::to_string(n) + " = " + (A << n).to_string();
+		break;
+	case 12:
+		std::cout << " На сколько бит будем двигать строку B?\n";
+		std::cin >> n;
+		if (n < 0)
+			throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
+		message = "Результаты побитового сдвига: B << " + std::to_string(n) + " = " + (B << n).to_string();
+		break;
+	case 13:
+		std::cout << " На сколько будем двигать строку A?\n";
+		std::cin >> n;
+		if (n < 0)
+			throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
+		message = "Результаты побитового сдвига: A >> " + std::to_string(n) + " = " + (A >> n).to_string();
+		break;
+	case 14:
+		std::cout << " На сколько будем двигать строку B?\n";
+		std::cin >> n;
+		if (n < 0)
+			throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
+		message = "Результаты побитового сдвига: B >> " + std::to_string(n) + " = " + (B >> n).to_string();
+		break;
+	}
+}
 int main()
 {
 	setlocale(LC_ALL, "Russian");
@@ -128,72 +195,11 @@ int main()
 
 	do
 	{
-
 		int choice = menu1();
-		unsigned int n;
+		
 		std::string message = "";
-		int choice_output;
-		switch (choice)
-		{
-		case 1:
-			message = A.to_string();
-			break;
-		case 2:
-			message = B.to_string();
-			break;
-		case 3:
-			input_object(A);
-			break;
-		case 4:
-			input_object(B);
-			break;
-		case 5:
-			message = "A > B =" + (A > B);
-			break;
-		case 6:
-			message = "A & B =" + (A & B).to_string() + '\n';
-			break;
-		case 7:
-			message = "A | B =" + (A | B).to_string() + '\n';
-			break;
-		case 8:
-			message = "A ^ B =" + (A & B).to_string() + '\n';
-			break;
-		case 9:
-			message = "not A = " + (~A).to_string() + '\n';
-			break;
-		case 10:
-			message = "not B = " + (~B).to_string() + '\n';
-			break;
-		case 11:
-			std::cout << " На сколько будем двигать строку A?\n";
-			std::cin >> n;
-			if (n < 0)
-				throw std::runtime_error("МЕНЬШЕ НУЛЯ СДВИГ НИЗЯ");
-			message = "Результаты побитового сдвига A << " + std::to_string(n) + " = " + (A << n).to_string();
-			break;
-		case 12:
-			std::cout << " На сколько будем двигать строку B?\n";
-			std::cin >> n;
-			if (n < 0)
-				throw std::runtime_error("МЕНЬШЕ НУЛЯ СДВИГ НИЗЯ");
-			message = "Результаты побитового сдвига B << " + std::to_string(n) + " = " + (B << n).to_string();
-			break;
-		case 13:
-			std::cout << " На сколько будем двигать строку A?\n";
-			std::cin >> n;
-			if (n < 0)
-				throw std::runtime_error("МЕНЬШЕ НУЛЯ СДВИГ НИЗЯ");
-			message = "Результаты побитового сдвига A >> " + std::to_string(n) + " = " + (A >> n).to_string();
-			break;
-		case 14:
-			std::cout << " На сколько будем двигать строку B?\n";
-			std::cin >> n;
-			if (n < 0)
-				throw std::runtime_error("МЕНЬШЕ НУЛЯ СДВИГ НИЗЯ");
-			message = "Результаты побитового сдвига B >> " + std::to_string(n) + " = " + (A >> n).to_string();
-			break;
-		}
+
+		message = task(A, B, choice);
 
 		if (message != "")
 		{
