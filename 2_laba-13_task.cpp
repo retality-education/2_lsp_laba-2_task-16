@@ -6,49 +6,39 @@
 
 #include"BitString.h"
 
+//Начало: Определение сигнатур методов
+void correct(int& x, int left, int right, std::string message);
 
+// Меню и действия с ним
+short menu();
+int how_much_should_the_value_be_shifted(const std::string& message);
+std::string complete_chosen_action(BitString& A, BitString& B, int choice);
+void end_menu(bool& exit);
+
+//Ввод и его обработка
+std::string check_file();
+int input();
+void input_object(BitString& obj);	
+void input_start_value_of_objs(BitString& A, BitString& B);
+
+//Вывод и его обработка
+int choose_output_way();
+void output_result(std::string& message);
+//Конец: Определение сигнатур методов
+
+
+//метод проверки на корректность вводимых значений
 void correct(int& x, int left, int right, std::string message) {
 	do {
 		std::cout << message;
 		std::cin >> x;
 	} while (x < left || x > right);
 }
-int input()
-{
-	std::cout << "Выберите способ ввода\n1. Из консоли\n2. Из файла\n";
-	int x;
-	correct(x, 1, 2, "->");
-	return x;
-}
 
-int output()
-{
-	std::cout << "Выберите способ вывода\n1. В консоль\n2. В файл\n";
-	int x;
-	correct(x, 1, 2, "->");
-	return x;
-}
 
-std::string check_file()
-{
-	std::cout << "Введите имя файла без расширения\n->";
-	std::string file;
-	std::cin >> file;
-	file = file + ".txt";
-	std::ifstream ifile(file);
-	if (ifile)
-	{
-		if (ifile.eof())
-		{
-			file = "error";
-			ifile.close();
-		}
-	}
-	else file = "error";
-	return file;
-}
 
-short menu1()
+// Начало: Меню и действия с ним
+short menu()
 {
 	std::cout << "Выберете задачу:\n";
 	std::cout << "1.Вывести битовую строку A\n";
@@ -69,54 +59,15 @@ short menu1()
 	correct(choice, 1, 14, "->");
 	return choice;
 }
-
-
-
-
-
-void end(bool& exit)
-{
-	std::cout << "\n1. Продолжить\n2. Завершить работу\n";
-	int end;
-	correct(end, 1, 2, "->");
-	if (end == 2)
-		exit = true;
-
+int how_much_should_the_value_be_shifted(const std::string& message) {
+	int n;
+	std::cout << message << '\n';
+	std::cin >> n;
+	if (n < 0)
+		throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
+	return n;
 }
-
-void input_object(BitString& obj) {
-	bool is_input{};
-
-	if (!is_input)
-	{
-		int way{};
-		do {
-			std::cout << "1. Прочитать как бинарное число.\n 2. Прочитать как обычное число.\n";
-			std::cin >> way;
-		} while (way < 1 || way > 2);
-
-
-		int start = input();
-		if (start == 1)
-			obj.input(way);
-		else
-		{
-			std::string file = check_file();
-			if (file == "error")
-			{
-				std::cout << "Файл не существует или пуст\n";
-				is_input = false;
-			}
-			else
-			{
-				std::ifstream ifile(file);
-				obj.inputFromFile(ifile, way);
-				ifile.close();
-			}
-		}
-	}
-}
-std::string complete_choosen_action(BitString& A, BitString& B, int choice) {
+std::string complete_chosen_action(BitString& A, BitString& B, int choice) {
 	int n;
 	std::string message;
 
@@ -135,16 +86,17 @@ std::string complete_choosen_action(BitString& A, BitString& B, int choice) {
 		input_object(B);
 		break;
 	case 5:
-		message = "A > B =" + (A > B);
+		message = "A > B = ";
+		message += (A > B) ? "True" : "False";
 		break;
-	case 6:
-		message = "A & B =" + (A & B).to_string() + '\n';
+	case 6: 
+		message = "A & B = " + (A & B).to_string() + '\n';
 		break;
 	case 7:
-		message = "A | B =" + (A | B).to_string() + '\n';
+		message = "A | B = " + (A | B).to_string() + '\n';
 		break;
 	case 8:
-		message = "A ^ B =" + (A & B).to_string() + '\n';
+		message = "A ^ B = " + (A & B).to_string() + '\n';
 		break;
 	case 9:
 		message = "not A = " + (~A).to_string() + '\n';
@@ -153,79 +105,153 @@ std::string complete_choosen_action(BitString& A, BitString& B, int choice) {
 		message = "not B = " + (~B).to_string() + '\n';
 		break;
 	case 11:
-		std::cout << " На сколько бит будем двигать строку A?\n";
-		std::cin >> n;
-		if (n < 0)
-			throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
+		n = how_much_should_the_value_be_shifted("На сколько бит будем двигать строку: A << ");
 		message = "Результаты побитового сдвига: A << " + std::to_string(n) + " = " + (A << n).to_string();
 		break;
 	case 12:
-		std::cout << " На сколько бит будем двигать строку B?\n";
-		std::cin >> n;
-		if (n < 0)
-			throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
-		message = "Результаты побитового сдвига: B << " + std::to_string(n) + " = " + (B << n).to_string();
+		n = how_much_should_the_value_be_shifted("На сколько бит будем двигать строку: B << ");
+		message ="Результаты побитового сдвига: B << " + std::to_string(n) + " = " + (B << n).to_string();
 		break;
 	case 13:
-		std::cout << " На сколько будем двигать строку A?\n";
-		std::cin >> n;
-		if (n < 0)
-			throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
+		n = how_much_should_the_value_be_shifted("На сколько бит будем двигать строку: A >> ");
 		message = "Результаты побитового сдвига: A >> " + std::to_string(n) + " = " + (A >> n).to_string();
 		break;
 	case 14:
-		std::cout << " На сколько будем двигать строку B?\n";
-		std::cin >> n;
-		if (n < 0)
-			throw std::runtime_error("Сдвиг на отрицальное колличество бит невозможен!");
+		n = how_much_should_the_value_be_shifted("На сколько бит будем двигать строку: B >> ");
 		message = "Результаты побитового сдвига: B >> " + std::to_string(n) + " = " + (B >> n).to_string();
 		break;
 	}
+	return message;
 }
+void end_menu(bool& exit)
+{
+	std::cout << "\n1. Продолжить\n2. Завершить работу\n";
+	int end;
+	correct(end, 1, 2, "->");
+	if (end == 2)
+		exit = true;
+
+}
+// Конец: Меню и его обработка
+
+
+// Начало: Ввод и его обработка
+std::string check_file()
+{
+	std::cout << "Введите имя файла без расширения\n->";
+	std::string file;
+	std::cin >> file;
+	file = file + ".txt";
+	std::ifstream ifile(file);
+	if (ifile)
+	{
+		if (ifile.eof())
+		{
+			throw std::runtime_error("Файл не существует или пуст");
+			ifile.close();
+		}
+	}
+	else
+		throw std::runtime_error("Файл не существует или пуст");
+	return file;
+}
+int input()
+{
+	std::cout << "Выберите способ ввода\n1. Из консоли\n2. Из файла\n";
+	int x;
+	correct(x, 1, 2, "->");
+	return x;
+}
+void input_object(BitString& obj) {
+	int way{};
+	std::cout << "1. Прочитать как бинарное число.\n2. Прочитать как обычное число.\n";
+	correct(way, 1, 2, "->");
+	
+	int start = input();
+	if (start == 1)
+		obj.input(std::cin, way);
+	else{
+		std::string file = check_file();
+		std::ifstream ifile(file);
+		obj.input(ifile, way);
+		ifile.close();
+	}
+}
+
+void input_start_value_of_objs(BitString& A, BitString& B) {
+	int way{}, start{};
+	std::cout << "Далее введите две битовые строки A и B, следуя инструкциям ниже:\n";
+	std::cout << "Выберите способ обработки числа: \n1. Прочитать как бинарные числа.\n2. Прочитать как обычные числа.\n";
+	correct(way, 1, 2, "->");
+
+	std::cout << "Выберите способ ввода:\n1. Из консоли\n2. Из файла\n";
+	correct(start, 1, 2, "->");
+
+	if (start == 1) {
+		std::cout << "Введите битовую строку, представленную через пробел двумя числами: \n";
+		A.input(std::cin, way);
+		std::cout << '\n';
+		std::cout << "Введите битовую строку, представленную через пробел двумя числами: \n";
+		B.input(std::cin, way);
+		std::cout << '\n';
+	}
+	else {
+		std::string file = check_file();
+		std::ifstream ifile(file);
+		A.input(ifile, way);
+		B.input(ifile, way);
+		ifile.close();
+	}
+}
+// Конец: ввод и его обработка
+
+
+// Начало: вывод и его обработка
+int choose_output_way()
+{
+	std::cout << "Выберите способ вывода\n1. В консоль\n2. В файл\n";
+	int x;
+	correct(x, 1, 2, "->");
+	return x;
+}
+void output_result(std::string& message) {
+
+	int output_way = choose_output_way();
+	if (output_way == 2)
+	{
+		std::string file = check_file();
+		std::ofstream ofile(file);
+		ofile << message;
+		ofile.close();
+	}else 
+		std::cout << message;
+}
+// Конец: вывод и его обработка
+
+
+// main
 int main()
 {
 	setlocale(LC_ALL, "Russian");
-	bool exit{};
+	bool exit_flag{};
+	int chosen_action{};
+	std::string result_message{};
 	BitString A{}, B{};
 
-	bool is_input{};
-	std::cout << "Далее введите две битовые строки A и B, следуя инструкциям ниже:\n";
-	input_object(A);
-	input_object(B);
-
+	input_start_value_of_objs(A, B);
 	do
 	{
-		int choice = menu1();
-		
-		std::string message = "";
+		chosen_action = menu();
 
-		message = complete_choosen_action(A, B, choice);
+		result_message = complete_chosen_action(A, B, chosen_action);
 
-		
-
-		if (message != "")
-		{
-			int is_output = output();
-			if (is_output == 2)
-			{
-				std::string file = check_file();
-				if (file == "error")
-				{
-					std::cout << "Файл не существует или пуст\n";
-					is_input = false;
-				}
-				else
-				{
-					std::ofstream ofile(file);
-					ofile << message;
-					ofile.close();
-				}
-			}
-			else std::cout << message;
+		if (result_message != "") {
+			output_result(result_message);
 		}
-		end(exit);
 
-	} while (exit != true);
+		end_menu(exit_flag);
+
+	} while (exit_flag != true);
 
 	return 0;
 }

@@ -1,41 +1,37 @@
 #include "BitString.h"
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <bit>
 
-// Конструктор по умолчанию
 BitString::BitString() : part1(0), part2(0) {}
 
-// Конструктор с параметрами
 BitString::BitString(unsigned long p1, unsigned long p2) : part1(p1), part2(p2) {}
 
-// Оператор присваивания
 BitString& BitString::operator =(const BitString& other) {
-    if (this != &other) { // Проверка на самоприсваивание
+    if (this != &other) {
         part1 = other.part1;
         part2 = other.part2;
     }
     return *this;
 }
 
-// Оператор AND
 BitString BitString::operator &(const BitString& t) const {
     return BitString(part1 & t.part1, part2 & t.part2);
 }
 
-// Оператор OR
 BitString BitString::operator |(const BitString& t) const {
     return BitString(part1 | t.part1, part2 | t.part2);
 }
 
-// Оператор XOR
 BitString BitString::operator ^(const BitString& t) const {
     return BitString(part1 ^ t.part1, part2 ^ t.part2);
 }
 
-// Оператор NOT
 BitString BitString::operator ~() const {
     return BitString(~part1, ~part2);
 }
 
-// Оператор сдвига влево
 BitString BitString::operator <<(int n) const {
     if (n < 32) {
         return BitString((part1 << n) | (part2 >> (32 - n)), part2 << n);
@@ -48,7 +44,6 @@ BitString BitString::operator <<(int n) const {
     }
 }
 
-// Оператор сдвига вправо
 BitString BitString::operator >>(int n) const {
     if (n < 32) {
         return BitString(part1 >> n, (part2 >> n) | (part1 << (32 - n)));
@@ -61,7 +56,6 @@ BitString BitString::operator >>(int n) const {
     }
 }
 
-
 // Вывод битов на экран
 void BitString::print() const {
     for (int i = 31; i >= 0; --i) { // выводим часть 1
@@ -73,32 +67,17 @@ void BitString::print() const {
     std::cout << std::endl;
 }
 
-// Ввод объекта с клавиатуры
-void BitString::input(int way) {
-
+// Ввод объекта из потока
+void BitString::input(std::istream& is, int way) {
     std::string s1, s2;
-    if (way == 1)
-    {
-        std::cout << "Введите две бинарные строки через enter: ";
-        std::cin >> s1 >> s2;
-        part1 = stoi(s1, 0, 2);
-        part2 = stoi(s2, 0, 2);
+    if (way == 1) {
+        is >> s1 >> s2;
+        part1 = std::stoul(s1, nullptr, 2);
+        part2 = std::stoul(s2, nullptr, 2);
     }
-    else
-        std::cin >> part1 >> part2;
-}
-
-// Ввод объекта из файла
-void BitString::inputFromFile(std::ifstream& file, int way) {
-    std::string s1, s2;
-    if (way == 1)
-    {
-        file >> s1 >> s2;
-        part1 = stoi(s1, 0, 2);
-        part2 = stoi(s2, 0, 2);
+    else {
+        is >> part1 >> part2;
     }
-    else
-        file >> part1 >> part2;
 }
 
 // Вывод объекта в поток
@@ -110,12 +89,10 @@ void BitString::output(std::ostream& os) const {
 std::string BitString::to_string() const {
     std::string result;
 
-    // Извлечение битов из part1
     for (int i = 31; i >= 0; --i) {
         result += ((part1 >> i) & 1) ? '1' : '0';
     }
 
-    // Извлечение битов из part2
     for (int i = 31; i >= 0; --i) {
         result += ((part2 >> i) & 1) ? '1' : '0';
     }
@@ -129,15 +106,12 @@ bool BitString::operator ==(const BitString& other) const {
 }
 
 // Оператор тройного сравнения (<=>)
-std::strong_ordering BitString::operator<=>(const BitString& other) const
-{
+std::strong_ordering BitString::operator<=>(const BitString& other) const {
     if (part1 != other.part1)
         return part1 <=> other.part1;
 
     return part2 <=> other.part2;
 }
-
-
 
 // Оператор неравенства
 bool BitString::operator !=(const BitString& other) const {

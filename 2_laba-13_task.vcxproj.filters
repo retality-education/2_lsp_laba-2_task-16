@@ -27,4 +27,8 @@
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="test_input.txt" />
+    <Text Include="test_output.txt" />
+  </ItemGroup>
 </Project>

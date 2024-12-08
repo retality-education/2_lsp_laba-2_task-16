@@ -23,8 +23,7 @@ public:
 
     void print() const; // Вывод битов
 
-    void input(int way); // Ввод объекта с клавиатуры
-    void inputFromFile(std::ifstream& file, int way); // Ввод объекта из файла
+    void input(std::istream& is, int way); // Ввод объекта с клавиатуры
     void output(std::ostream& os) const; // Вывод объекта в поток
     std::string to_string() const; // Преобразование в строку
 
