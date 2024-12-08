@@ -116,7 +116,7 @@ void input_object(BitString& obj) {
 		}
 	}
 }
-std::string task(BitString& A, BitString& B, int choice) {
+std::string complete_choosen_action(BitString& A, BitString& B, int choice) {
 	int n;
 	std::string message;
 
@@ -199,7 +199,9 @@ int main()
 		
 		std::string message = "";
 
-		message = task(A, B, choice);
+		message = complete_choosen_action(A, B, choice);
+
+		
 
 		if (message != "")
 		{
