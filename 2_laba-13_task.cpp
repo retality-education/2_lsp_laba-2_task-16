@@ -6,6 +6,13 @@
 
 #include"BitString.h"
 
+enum class Operations
+{
+	printA = 1, printB, inputA, inputB, compareAB, AandB, AorB, AxorB, notA, notB, left_shiftA, left_shiftB, right_shiftA, right_shiftB	
+};
+
+using enum Operations;
+
 //Начало: Определение сигнатур методов
 void correct(int& x, int left, int right, std::string message);
 
@@ -71,52 +78,52 @@ std::string complete_chosen_action(BitString& A, BitString& B, int choice) {
 	int n;
 	std::string message;
 
-	switch (choice)
+	switch (static_cast<Operations>(choice))
 	{
-	case 1:
+	case printA:
 		message = A.to_string();
 		break;
-	case 2:
+	case printB:
 		message = B.to_string();
 		break;
-	case 3:
+	case inputA:
 		input_object(A);
 		break;
-	case 4:
+	case inputB:
 		input_object(B);
 		break;
-	case 5:
+	case compareAB:
 		message = "A > B = ";
 		message += (A > B) ? "True" : "False";
 		break;
-	case 6: 
+	case AandB: 
 		message = "A & B = " + (A & B).to_string() + '\n';
 		break;
-	case 7:
+	case AorB:
 		message = "A | B = " + (A | B).to_string() + '\n';
 		break;
-	case 8:
+	case AxorB:
 		message = "A ^ B = " + (A & B).to_string() + '\n';
 		break;
-	case 9:
+	case notA:
 		message = "not A = " + (~A).to_string() + '\n';
 		break;
-	case 10:
+	case notB:
 		message = "not B = " + (~B).to_string() + '\n';
 		break;
-	case 11:
+	case left_shiftA:
 		n = how_much_should_the_value_be_shifted("На сколько бит будем двигать строку: A << ");
 		message = "Результаты побитового сдвига: A << " + std::to_string(n) + " = " + (A << n).to_string();
 		break;
-	case 12:
+	case left_shiftB:
 		n = how_much_should_the_value_be_shifted("На сколько бит будем двигать строку: B << ");
 		message ="Результаты побитового сдвига: B << " + std::to_string(n) + " = " + (B << n).to_string();
 		break;
-	case 13:
+	case right_shiftA:
 		n = how_much_should_the_value_be_shifted("На сколько бит будем двигать строку: A >> ");
 		message = "Результаты побитового сдвига: A >> " + std::to_string(n) + " = " + (A >> n).to_string();
 		break;
-	case 14:
+	case right_shiftB:
 		n = how_much_should_the_value_be_shifted("На сколько бит будем двигать строку: B >> ");
 		message = "Результаты побитового сдвига: B >> " + std::to_string(n) + " = " + (B >> n).to_string();
 		break;
@@ -237,21 +244,25 @@ int main()
 	int chosen_action{};
 	std::string result_message{};
 	BitString A{}, B{};
+	try {
+		input_start_value_of_objs(A, B);
+		do
+		{
+			chosen_action = menu();
 
-	input_start_value_of_objs(A, B);
-	do
-	{
-		chosen_action = menu();
+			result_message = complete_chosen_action(A, B, chosen_action);
 
-		result_message = complete_chosen_action(A, B, chosen_action);
+			if (result_message != "") {
+				output_result(result_message);
+			}
 
-		if (result_message != "") {
-			output_result(result_message);
-		}
+			end_menu(exit_flag);
 
-		end_menu(exit_flag);
-
-	} while (exit_flag != true);
-
+		} while (exit_flag != true);
+	}
+	catch (const std::exception& e) {
+		std::cerr << e.what() << std::endl;
+		return 1;
+	}
 	return 0;
 }
